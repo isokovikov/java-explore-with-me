@@ -67,9 +67,9 @@ public class EventCustomRepositoryImpl implements EventCustomRepository {
         // Применение пагинации
         return entityManager.createQuery(query)
                 .setFirstResult(from)
-                .setMaxResults(size).
-                getResultStream().
-                collect(Collectors.toSet());
+                .setMaxResults(size)
+                .getResultStream()
+                .collect(Collectors.toSet());
     }
 
     /**
