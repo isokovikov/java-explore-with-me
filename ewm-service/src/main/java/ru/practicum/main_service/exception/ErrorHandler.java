@@ -46,7 +46,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, ConstraintViolationException.class,
-            MissingServletRequestParameterException.class})
+            MissingServletRequestParameterException.class, BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidationException(final RuntimeException exception) {
         log.error(exception.toString());

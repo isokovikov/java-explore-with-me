@@ -21,11 +21,11 @@ import ru.practicum.main_service.event.model.Event;
 import ru.practicum.main_service.event.model.Location;
 import ru.practicum.main_service.event.repository.EventRepository;
 import ru.practicum.main_service.event.repository.LocationRepository;
+import ru.practicum.main_service.exception.BadRequestException;
 import ru.practicum.main_service.exception.ForbiddenException;
 import ru.practicum.main_service.exception.NotFoundException;
 import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.service.UserService;
-import ru.practicum.server.exception.BadRequestException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -378,7 +378,7 @@ public class EventServiceImpl implements EventService {
 
     private void checkIsNewLimitNotLessOld(Integer newLimit, Long eventParticipantLimit) {
         if (newLimit != 0 && eventParticipantLimit != 0 && (newLimit < eventParticipantLimit)) {
-            throw new ForbiddenException(String.format("Field: stateAction. Error: The new limit of participants must " +
+            throw new BadRequestException(String.format("Field: stateAction. Error: The new limit of participants must " +
                     "be no less than the number of applications already approved: %s", eventParticipantLimit));
         }
     }
