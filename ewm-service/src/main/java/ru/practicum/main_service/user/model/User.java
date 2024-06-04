@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -29,9 +30,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Size(min = 3, max = 250)
     @Column(nullable = false)
     String name;
 
+    @Size(min = 6, max = 254)
     @Column(nullable = false, unique = true)
     String email;
 

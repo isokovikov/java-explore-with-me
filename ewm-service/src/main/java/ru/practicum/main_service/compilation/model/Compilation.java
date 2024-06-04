@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -36,6 +37,7 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Size(max = 50)
     @Column(nullable = false, length = MainCommonUtils.MAX_LENGTH_TITLE, unique = true)
     String title;
 

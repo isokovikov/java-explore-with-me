@@ -62,7 +62,9 @@ public class EventServiceImpl implements EventService {
 
         Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
 
-        return toEventsFullDto(events);
+        return events.stream()
+                .map(this::toEventFullDto)
+                .collect(Collectors.toSet());
     }
 
     @Override

@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -29,6 +30,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Size(max = 50)
     @Column(nullable = false, unique = true)
     String name;
 
