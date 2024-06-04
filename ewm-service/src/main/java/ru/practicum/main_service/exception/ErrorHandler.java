@@ -91,10 +91,10 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleForbiddenException(final ForbiddenException exception) {
         log.error(exception.toString());
-        return new ApiError(HttpStatus.BAD_REQUEST.name(),
+        return new ApiError(HttpStatus.CONFLICT.name(),
                 "For the requested operation the conditions are not met.",
                 exception.getMessage(),
                 getErrors(exception),

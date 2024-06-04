@@ -25,6 +25,7 @@ import ru.practicum.main_service.exception.ForbiddenException;
 import ru.practicum.main_service.exception.NotFoundException;
 import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.service.UserService;
+import ru.practicum.server.exception.BadRequestException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -363,14 +364,14 @@ public class EventServiceImpl implements EventService {
 
     private void checkStartIsBeforeEnd(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
-            throw new ForbiddenException(String.format("Field: eventDate. Error: incorrect parameters of the temporary " +
+            throw new BadRequestException(String.format("Field: eventDate. Error: incorrect parameters of the temporary " +
                     "interval. Value: rangeStart = %s, rangeEnd = %s", rangeStart, rangeEnd));
         }
     }
 
     private void checkNewEventDate(LocalDateTime newEventDate, LocalDateTime minTimeBeforeEventStart) {
         if (newEventDate != null && newEventDate.isBefore(minTimeBeforeEventStart)) {
-            throw new ForbiddenException(String.format("Field: eventDate. Error: there is too little time left for " +
+            throw new BadRequestException(String.format("Field: eventDate. Error: there is too little time left for " +
                     "preparation. Value: %s", newEventDate));
         }
     }
