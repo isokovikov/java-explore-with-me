@@ -118,4 +118,9 @@ public class StatsServiceImpl implements StatsService {
                 .filter(event -> event.getPublishedOn() != null)
                 .collect(Collectors.toSet());
     }
+
+    private boolean isUniqueView(Long eventId, String ipAddress) {
+        // Check if the IP address has already accessed the event
+        return !requestRepository.findByEventIdAndIpAddress(eventId, ipAddress);
+    }
 }

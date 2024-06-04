@@ -30,7 +30,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Size(min = 3, max = 250)
+    @Size(min = 2, max = 250)
     @Column(nullable = false)
     String name;
 
