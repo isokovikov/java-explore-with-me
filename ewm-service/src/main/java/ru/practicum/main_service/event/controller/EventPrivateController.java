@@ -42,8 +42,8 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.OK)
     public Set<EventShortDto> getAllEventsByPrivate(
             @PathVariable Long userId,
-            @RequestParam(required = false, defaultValue = MainCommonUtils.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
-            @RequestParam(required = false, defaultValue = MainCommonUtils.PAGE_DEFAULT_SIZE) @Positive Integer size) {
+            @RequestParam(value = "from", defaultValue = "0") int from,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         return eventService.getAllEventsByPrivate(userId, PageRequest.of(from / size, size));
     }
 
