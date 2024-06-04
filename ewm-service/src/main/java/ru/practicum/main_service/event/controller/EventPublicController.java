@@ -17,8 +17,6 @@ import ru.practicum.main_service.event.enums.EventSortType;
 import ru.practicum.main_service.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
