@@ -26,6 +26,7 @@ import ru.practicum.main_service.exception.ForbiddenException;
 import ru.practicum.main_service.exception.NotFoundException;
 import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.service.UserService;
+import ru.practicum.stats_common.model.ViewStats;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -330,23 +331,6 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toSet());
     }
 
-    private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
-        Map<Long, Long> views = statsService.getViews(events);
-        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
-
-        return events.stream()
-                .map((event) -> eventMapper.toEventFullDto(
-                        event,
-                        confirmedRequests.getOrDefault(event.getId(), 0L),
-                        views.getOrDefault(event.getId(), 0L)))
-                .collect(Collectors.toSet());
-    }
-
-    private EventFullDto toEventFullDto(Event event) {
-        Set<EventFullDto> events = toEventsFullDto(Set.of(event));
-        return events.iterator().next();
-    }
-
     private Event getEventByIdAndInitiatorId(Long eventId, Long userId) {
         log.info("Event output with id {}", eventId);
 
@@ -383,5 +367,26 @@ public class EventServiceImpl implements EventService {
             throw new BadRequestException(String.format("Field: stateAction. Error: The new limit of participants must " +
                     "be no less than the number of applications already approved: %s", eventParticipantLimit));
         }
+    }
+
+    private EventFullDto toEventFullDto(Event event) {
+        // Получаем статистику просмотров для одного события
+        List<ViewStats> stats = statsService.getStats(
+                LocalDateTime.now().minusYears(10), // например, за последние 10 лет
+                LocalDateTime.now(),
+                List.of("/events/" + event.getId()),
+                false // или true, если нужны уникальные IP
+        );
+
+        long views = stats.stream()
+                .filter(stat -> stat.getUri().equals("/events/" + event.getId()))
+                .mapToLong(ViewStats::getHits)
+                .sum();
+
+        return eventMapper.toEventFullDto(
+                event,
+                statsService.getConfirmedRequests(Set.of(event)).getOrDefault(event.getId(), 0L),
+                views
+        );
     }
 }
