@@ -10,8 +10,8 @@ import ru.practicum.main_service.category.dto.NewCategoryDto;
 import ru.practicum.main_service.category.mapper.CategoryMapper;
 import ru.practicum.main_service.category.model.Category;
 import ru.practicum.main_service.category.repository.CategoryRepository;
-import ru.practicum.main_service.exception.BadRequestException;
 import ru.practicum.main_service.exception.NotFoundException;
+import ru.practicum.main_service.exception.BadRequestException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,15 +56,15 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto patch(Long catId, CategoryDto categoryDto) {
         log.info("Updating a Category with id {} new parameters {}", catId, categoryDto);
 
+        if (categoryDto.getName() != null && categoryDto.getName().length() > 50) {
+            throw new BadRequestException("The name length should not exceed 50 characters.");
+        }
+
         categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException("There is no Category with this id."));
 
         categoryDto.setId(catId);
-        try {
-            return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.categoryDtoToCategory(categoryDto)));
-        } catch (Exception e) {
-            throw new BadRequestException("Invalid data");
-        }
+        return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.categoryDtoToCategory(categoryDto)));
     }
 
     @Override

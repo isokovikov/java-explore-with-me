@@ -58,31 +58,29 @@ public class CompilationServiceImpl implements CompilationService {
 
         Compilation compilation = getCompilationById(compId);
 
-        try {
-            if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
-                compilation.setTitle(updateCompilationRequest.getTitle());
+        if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
+            if (updateCompilationRequest.getTitle().length() > 50) {
+                throw new BadRequestException("The title length should not exceed 50 characters.");
             }
-
-            if (updateCompilationRequest.getPinned() != null) {
-                compilation.setPinned(updateCompilationRequest.getPinned());
-            }
-
-            if (updateCompilationRequest.getEvents() != null) {
-                Set<Event> events = eventService.getEventsByIds(updateCompilationRequest.getEvents());
-
-                checkSize(events, updateCompilationRequest.getEvents());
-
-                compilation.setEvents(events);
-            }
-
-            compilationRepository.save(compilation);
-            Set<EventShortDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
-
-            return compilationMapper.toCompilationDto(compilation, eventsShortDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            compilation.setTitle(updateCompilationRequest.getTitle());
         }
 
+        if (updateCompilationRequest.getPinned() != null) {
+            compilation.setPinned(updateCompilationRequest.getPinned());
+        }
+
+        if (updateCompilationRequest.getEvents() != null) {
+            Set<Event> events = eventService.getEventsByIds(updateCompilationRequest.getEvents());
+
+            checkSize(events, updateCompilationRequest.getEvents());
+
+            compilation.setEvents(events);
+        }
+
+        compilationRepository.save(compilation);
+        Set<EventShortDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
+
+        return compilationMapper.toCompilationDto(compilation, eventsShortDto);
     }
 
     @Override
