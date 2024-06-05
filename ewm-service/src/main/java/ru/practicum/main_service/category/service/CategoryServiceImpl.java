@@ -10,6 +10,7 @@ import ru.practicum.main_service.category.dto.NewCategoryDto;
 import ru.practicum.main_service.category.mapper.CategoryMapper;
 import ru.practicum.main_service.category.model.Category;
 import ru.practicum.main_service.category.repository.CategoryRepository;
+import ru.practicum.main_service.exception.BadRequestException;
 import ru.practicum.main_service.exception.NotFoundException;
 
 import java.util.List;
@@ -59,7 +60,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new NotFoundException("There is no Category with this id."));
 
         categoryDto.setId(catId);
-        return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.categoryDtoToCategory(categoryDto)));
+        try {
+            return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.categoryDtoToCategory(categoryDto)));
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid data");
+        }
     }
 
     @Override

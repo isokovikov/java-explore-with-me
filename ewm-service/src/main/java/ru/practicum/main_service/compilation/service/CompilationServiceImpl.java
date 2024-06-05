@@ -14,6 +14,7 @@ import ru.practicum.main_service.compilation.repository.CompilationRepository;
 import ru.practicum.main_service.event.dto.EventShortDto;
 import ru.practicum.main_service.event.model.Event;
 import ru.practicum.main_service.event.service.EventService;
+import ru.practicum.main_service.exception.BadRequestException;
 import ru.practicum.main_service.exception.NotFoundException;
 
 import java.util.ArrayList;
@@ -57,26 +58,31 @@ public class CompilationServiceImpl implements CompilationService {
 
         Compilation compilation = getCompilationById(compId);
 
-        if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
-            compilation.setTitle(updateCompilationRequest.getTitle());
+        try {
+            if (updateCompilationRequest.getTitle() != null && !updateCompilationRequest.getTitle().isBlank()) {
+                compilation.setTitle(updateCompilationRequest.getTitle());
+            }
+
+            if (updateCompilationRequest.getPinned() != null) {
+                compilation.setPinned(updateCompilationRequest.getPinned());
+            }
+
+            if (updateCompilationRequest.getEvents() != null) {
+                Set<Event> events = eventService.getEventsByIds(updateCompilationRequest.getEvents());
+
+                checkSize(events, updateCompilationRequest.getEvents());
+
+                compilation.setEvents(events);
+            }
+
+            compilationRepository.save(compilation);
+            Set<EventShortDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
+
+            return compilationMapper.toCompilationDto(compilation, eventsShortDto);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
         }
 
-        if (updateCompilationRequest.getPinned() != null) {
-            compilation.setPinned(updateCompilationRequest.getPinned());
-        }
-
-        if (updateCompilationRequest.getEvents() != null) {
-            Set<Event> events = eventService.getEventsByIds(updateCompilationRequest.getEvents());
-
-            checkSize(events, updateCompilationRequest.getEvents());
-
-            compilation.setEvents(events);
-        }
-
-        compilationRepository.save(compilation);
-        Set<EventShortDto> eventsShortDto = eventService.toEventsShortDto(compilation.getEvents());
-
-        return compilationMapper.toCompilationDto(compilation, eventsShortDto);
     }
 
     @Override
