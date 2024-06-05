@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.main_service.category.dto.CategoryDto;
 import ru.practicum.main_service.category.dto.NewCategoryDto;
 import ru.practicum.main_service.category.service.CategoryService;
+import ru.practicum.main_service.exception.BadRequestException;
 
 import javax.validation.Valid;
 
@@ -32,7 +33,11 @@ public class CategoryAdminController {
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto patch(@PathVariable Long catId,
                              @Valid @RequestBody CategoryDto categoryDto) {
-        return categoryService.patch(catId, categoryDto);
+        try {
+            return categoryService.patch(catId, categoryDto);
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{catId}")

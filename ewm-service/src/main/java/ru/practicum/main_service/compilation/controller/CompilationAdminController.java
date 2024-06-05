@@ -14,6 +14,7 @@ import ru.practicum.main_service.compilation.dto.CompilationDto;
 import ru.practicum.main_service.compilation.dto.NewCompilationDto;
 import ru.practicum.main_service.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.main_service.compilation.service.CompilationService;
+import ru.practicum.main_service.exception.BadRequestException;
 
 import javax.validation.Valid;
 
@@ -33,7 +34,11 @@ public class CompilationAdminController {
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto patch(@PathVariable Long compId,
                                 @Valid @RequestBody UpdateCompilationRequest updateCompilationRequest) {
-        return compilationService.patch(compId, updateCompilationRequest);
+        try {
+            return compilationService.patch(compId, updateCompilationRequest);
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{compId}")
