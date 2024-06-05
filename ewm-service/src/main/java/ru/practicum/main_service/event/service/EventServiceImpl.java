@@ -266,7 +266,6 @@ public class EventServiceImpl implements EventService {
         Pageable pageableByPublic;
         pageableByPublic = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sortPublic);
 
-
         Set<Event> events = eventRepository.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, from, size, pageableByPublic);
 
         if (events.isEmpty()) {
@@ -287,11 +286,11 @@ public class EventServiceImpl implements EventService {
 
         List<EventShortDto> sortedList = new ArrayList<>(eventsShortDto);
 
-        if (needSort(sort, EventSortType.VIEWS)) {
+        /*if (needSort(sort, EventSortType.VIEWS)) {
             sortedList.sort(Comparator.comparing(EventShortDto::getViews));
         } else if (needSort(sort, EventSortType.EVENT_DATE)) {
             sortedList.sort(Comparator.comparing(EventShortDto::getEventDate));
-        }
+        }*/
 
         statsService.addHit(request);
 
