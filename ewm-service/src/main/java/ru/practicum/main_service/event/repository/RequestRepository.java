@@ -27,5 +27,5 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             "GROUP BY r.event.id")
     List<RequestStats> getConfirmedRequests(List<Long> eventsId);
 
-    boolean findByEventIdAndIpAddress(Long eventId, String ipAddress);
+    //boolean findByEventIdAndIpAddress(Long eventId, String ip);
 }
