@@ -1,5 +1,6 @@
 package ru.practicum.main_service.event.repository;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.main_service.event.enums.EventState;
 import ru.practicum.main_service.event.model.Event;
 
@@ -31,7 +32,7 @@ public class EventCustomRepositoryImpl implements EventCustomRepository {
      */
     @Override
     public Set<Event> getEventsByAdmin(List<Long> users, List<EventState> states, List<Long> categories,
-                                       LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+                                       LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size, Pageable pageable) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
         Root<Event> root = query.from(Event.class);

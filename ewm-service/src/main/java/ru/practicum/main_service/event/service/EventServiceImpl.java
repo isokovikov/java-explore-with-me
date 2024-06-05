@@ -2,7 +2,9 @@ package ru.practicum.main_service.event.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.category.model.Category;
@@ -61,11 +63,18 @@ public class EventServiceImpl implements EventService {
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
-        Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
 
-        return events.stream()
-                .map(this::toEventFullDto)
-                .collect(Collectors.toSet());
+        Pageable pageable;
+        if (from != null) {
+            pageable = PageRequest.of(from, size, sort);
+        } else {
+            pageable = PageRequest.of(0, size, sort);
+        }
+
+        Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size, pageable);
+
+        return toEventsFullDto(events);
     }
 
     @Override
@@ -388,5 +397,17 @@ public class EventServiceImpl implements EventService {
                 statsService.getConfirmedRequests(Set.of(event)).getOrDefault(event.getId(), 0L),
                 views
         );
+    }
+
+    private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
+        Map<Long, Long> views = statsService.getViews(events);
+        Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+
+        return events.stream()
+                .map((event) -> eventMapper.toEventFullDto(
+                        event,
+                        confirmedRequests.getOrDefault(event.getId(), 0L),
+                        views.getOrDefault(event.getId(), 0L)))
+                .collect(Collectors.toSet());
     }
 }
