@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.main_service.MainCommonUtils;
 import ru.practicum.main_service.event.dto.EventFullDto;
 import ru.practicum.main_service.event.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.main_service.event.dto.EventRequestStatusUpdateResult;
@@ -24,6 +25,8 @@ import ru.practicum.main_service.event.service.EventService;
 import ru.practicum.main_service.event.service.RequestService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Set;
 
@@ -39,8 +42,8 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.OK)
     public Set<EventShortDto> getAllEventsByPrivate(
             @PathVariable Long userId,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_SIZE) @Positive Integer size) {
         return eventService.getAllEventsByPrivate(userId, PageRequest.of(from / size, size));
     }
 
