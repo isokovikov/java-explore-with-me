@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.main_service.MainCommonUtils;
 import ru.practicum.main_service.event.dto.EventFullDto;
 import ru.practicum.main_service.event.dto.EventShortDto;
-import ru.practicum.main_service.event.enums.EventSortType;
 import ru.practicum.main_service.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,12 +37,11 @@ public class EventPublicController {
             @RequestParam(required = false) @DateTimeFormat(pattern = MainCommonUtils.DT_FORMAT) LocalDateTime rangeStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = MainCommonUtils.DT_FORMAT) LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
-            @RequestParam(required = false) EventSortType sort,
             @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_SIZE) @Positive Integer size,
             HttpServletRequest request) {
         return eventService.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable,
-                sort, from, size, request);
+                from, size, request);
     }
 
     @GetMapping("/{id}")

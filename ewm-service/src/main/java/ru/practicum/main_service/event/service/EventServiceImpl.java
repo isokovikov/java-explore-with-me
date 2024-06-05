@@ -15,7 +15,6 @@ import ru.practicum.main_service.event.dto.LocationDto;
 import ru.practicum.main_service.event.dto.NewEventDto;
 import ru.practicum.main_service.event.dto.UpdateEventRequest.UpdateEventAdminRequest;
 import ru.practicum.main_service.event.dto.UpdateEventRequest.UpdateEventUserRequest;
-import ru.practicum.main_service.event.enums.EventSortType;
 import ru.practicum.main_service.event.enums.EventState;
 import ru.practicum.main_service.event.mapper.EventMapper;
 import ru.practicum.main_service.event.mapper.LocationMapper;
@@ -251,10 +250,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> getEventsByPublic(
             String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-            Boolean onlyAvailable, EventSortType sort, Integer from, Integer size, HttpServletRequest request) {
+            Boolean onlyAvailable, Integer from, Integer size, HttpServletRequest request) {
         log.info("Output of events to a public request with parameters text = {}, categoriesId = {}, paid = {}, rangeStart = {}, " +
-                        "rangeEnd = {}, onlyAvailable = {}, sort = {}, from = {}, size = {}",
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+                        "rangeEnd = {}, onlyAvailable = {}, from = {}, size = {}",
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, from, size);
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
@@ -284,12 +283,6 @@ public class EventServiceImpl implements EventService {
         }
 
         List<EventShortDto> sortedList = new ArrayList<>(eventsShortDto);
-
-        /*if (needSort(sort, EventSortType.VIEWS)) {
-            sortedList.sort(Comparator.comparing(EventShortDto::getViews));
-        } else if (needSort(sort, EventSortType.EVENT_DATE)) {
-            sortedList.sort(Comparator.comparing(EventShortDto::getEventDate));
-        }*/
 
         statsService.addHit(request);
 
@@ -356,10 +349,6 @@ public class EventServiceImpl implements EventService {
         Location newLocation = locationMapper.toLocation(locationDto);
         return locationRepository.findByLatAndLon(newLocation.getLat(), newLocation.getLon())
                 .orElseGet(() -> locationRepository.save(newLocation));
-    }
-
-    private Boolean needSort(EventSortType sort, EventSortType typeToCompare) {
-        return sort != null && sort.equals(typeToCompare);
     }
 
     private void checkStartIsBeforeEnd(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
