@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
         Sort sortById = Sort.by("id").ascending();
-        Sort sortByDateTime = Sort.by("dateTime").descending();
+        Sort sortByDateTime = Sort.by("eventDate").descending();
         Sort sort = sortById.and(sortByDateTime);
 
         Pageable pageable;
