@@ -85,7 +85,7 @@ public class EventCustomRepositoryImpl implements EventCustomRepository {
      * @return множество событий, подходящих под указанные критерии
      */
     public Set<Event> getEventsByPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
-                                        LocalDateTime rangeEnd, Integer from, Integer size) {
+                                        LocalDateTime rangeEnd, Integer from, Integer size, Pageable pageable) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
         Root<Event> root = query.from(Event.class);

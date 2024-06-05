@@ -13,5 +13,5 @@ public interface EventCustomRepository {
                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size, Pageable pageable);
 
     Set<Event> getEventsByPublic(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
-                                 LocalDateTime rangeEnd, Integer from, Integer size);
+                                 LocalDateTime rangeEnd, Integer from, Integer size, Pageable pageable);
 }

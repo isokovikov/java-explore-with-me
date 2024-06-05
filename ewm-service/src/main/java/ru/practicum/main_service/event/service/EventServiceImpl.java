@@ -68,10 +68,10 @@ public class EventServiceImpl implements EventService {
         Sort sortByDateTime = Sort.by("eventDate").descending();
         Sort sort = sortByDateTime.and(sortById);
 
-        Pageable pageable;
-        pageable = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
+        Pageable pageableByAdmin;
+        pageableByAdmin = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
 
-        Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size, pageable);
+        Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size, pageableByAdmin);
 
         return toEventsFullDto(events);
     }
@@ -259,7 +259,15 @@ public class EventServiceImpl implements EventService {
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
-        Set<Event> events = eventRepository.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, from, size);
+        Sort sortById = Sort.by("id").descending();
+        Sort sortByDateTime = Sort.by("eventDate").descending();
+        Sort sortPublic = sortByDateTime.and(sortById);
+
+        Pageable pageableByPublic;
+        pageableByPublic = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sortPublic);
+
+
+        Set<Event> events = eventRepository.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, from, size, pageableByPublic);
 
         if (events.isEmpty()) {
             return List.of();
