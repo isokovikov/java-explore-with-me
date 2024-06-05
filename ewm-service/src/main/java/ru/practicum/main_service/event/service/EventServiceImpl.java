@@ -66,7 +66,7 @@ public class EventServiceImpl implements EventService {
 
         Sort sortById = Sort.by("id").ascending();
         Sort sortByDateTime = Sort.by("eventDate").descending();
-        Sort sort = sortById.and(sortByDateTime);
+        Sort sort = sortByDateTime.and(sortById);
 
         Pageable pageable;
         pageable = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
