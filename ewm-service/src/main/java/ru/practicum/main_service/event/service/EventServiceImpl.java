@@ -32,6 +32,7 @@ import ru.practicum.stats_common.model.ViewStats;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -394,10 +395,14 @@ public class EventServiceImpl implements EventService {
     }
 
     private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
+        List<Event> sortedEvents = events.stream()
+                .sorted(Comparator.comparing(Event::getEventDate))
+                .collect(Collectors.toList());
+
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
-        return events.stream()
+        return sortedEvents.stream()
                 .map((event) -> eventMapper.toEventFullDto(
                         event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
