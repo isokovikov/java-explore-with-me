@@ -62,7 +62,7 @@ public class EventServiceImpl implements EventService {
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
-        Sort sortById = Sort.by("id").descending();
+        Sort sortById = Sort.by("id").ascending();
         Sort sortByDateTime = Sort.by("eventDate").descending();
         Sort sort = sortByDateTime.and(sortById);
 
@@ -257,7 +257,7 @@ public class EventServiceImpl implements EventService {
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
-        Sort sortById = Sort.by("id").descending();
+        Sort sortById = Sort.by("id").ascending();
         Sort sortByDateTime = Sort.by("eventDate").descending();
         Sort sortPublic = sortByDateTime.and(sortById);
 
