@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,14 +64,12 @@ public class EventServiceImpl implements EventService {
 
         checkStartIsBeforeEnd(rangeStart, rangeEnd);
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Sort sortById = Sort.by("id").ascending();
+        Sort sortByDateTime = Sort.by("dateTime").descending();
+        Sort sort = sortById.and(sortByDateTime);
 
         Pageable pageable;
-        if (from != null) {
-            pageable = PageRequest.of(from, size, sort);
-        } else {
-            pageable = PageRequest.of(0, size, sort);
-        }
+        pageable = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
 
         Set<Event> events = eventRepository.getEventsByAdmin(users, states, categories, rangeStart, rangeEnd, from, size, pageable);
 
