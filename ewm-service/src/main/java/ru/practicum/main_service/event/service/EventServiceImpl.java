@@ -149,8 +149,7 @@ public class EventServiceImpl implements EventService {
         //log.info("Output of all user events with id {} and pagination {}", userId, pageable);
 
         userService.getUserById(userId);
-        int fromDB = Objects.isNull(from) ? 0 : from;
-        List<Event> events = eventRepository.findAllByInitiatorId(userId, PageRequest.of(fromDB, size));
+        List<Event> events = eventRepository.findAllByInitiatorId(userId, PageRequest.of(from, size));
 
         return toEventsShortDto(new HashSet<>(events));
     }
@@ -339,7 +338,8 @@ public class EventServiceImpl implements EventService {
                         event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(EventShortDto::getEventDate))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Event getEventByIdAndInitiatorId(Long eventId, Long userId) {
