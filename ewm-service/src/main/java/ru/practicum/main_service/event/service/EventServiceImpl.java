@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -395,18 +396,19 @@ public class EventServiceImpl implements EventService {
     }
 
     private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
-        List<Event> sortedEvents = events.stream()
-                .sorted(Comparator.comparing(Event::getEventDate))
-                .collect(Collectors.toList());
+//        List<Event> sortedEvents = events.stream()
+//                .sorted(Comparator.comparing(Event::getEventDate))
+//                .collect(Collectors.toList());
 
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
 
-        return sortedEvents.stream()
+        return events.stream()
                 .map((event) -> eventMapper.toEventFullDto(
                         event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
                         views.getOrDefault(event.getId(), 0L)))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(EventFullDto::getEventDate))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
