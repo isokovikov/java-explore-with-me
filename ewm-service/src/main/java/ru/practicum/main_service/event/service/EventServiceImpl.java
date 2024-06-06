@@ -263,10 +263,12 @@ public class EventServiceImpl implements EventService {
         Sort sortByDateTime = Sort.by("eventDate").descending();
         Sort sortPublic = sortByDateTime.and(sortById);
 
+        // не нужно
         Pageable pageableByPublic;
         pageableByPublic = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sortPublic);
+        int fromDB = Objects.isNull(from) ? 0 : from;
 
-        Set<Event> events = eventRepository.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, from, size, pageableByPublic);
+        Set<Event> events = eventRepository.getEventsByPublic(text, categories, paid, rangeStart, rangeEnd, fromDB, size, pageableByPublic);
 
         if (events.isEmpty()) {
             return List.of();
