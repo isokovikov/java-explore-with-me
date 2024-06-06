@@ -44,7 +44,7 @@ public class EventPrivateController {
             @PathVariable Long userId,
             @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_FROM) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = MainCommonUtils.PAGE_DEFAULT_SIZE) @Positive Integer size) {
-        return eventService.getAllEventsByPrivate(userId, PageRequest.of(from / size, size));
+        return eventService.getAllEventsByPrivate(userId, from, size);
     }
 
     @PostMapping

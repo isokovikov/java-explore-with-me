@@ -145,12 +145,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Set<EventShortDto> getAllEventsByPrivate(Long userId, Pageable pageable) {
-        log.info("Output of all user events with id {} and pagination {}", userId, pageable);
+    public Set<EventShortDto> getAllEventsByPrivate(Long userId, int from, int size) {
+        //log.info("Output of all user events with id {} and pagination {}", userId, pageable);
 
         userService.getUserById(userId);
-
-        List<Event> events = eventRepository.findAllByInitiatorId(userId, pageable);
+        int fromDB = Objects.isNull(from) ? 0 : from;
+        List<Event> events = eventRepository.findAllByInitiatorId(userId, PageRequest.of(fromDB, size));
 
         return toEventsShortDto(new HashSet<>(events));
     }

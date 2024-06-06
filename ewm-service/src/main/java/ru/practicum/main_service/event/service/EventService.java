@@ -20,7 +20,7 @@ public interface EventService {
 
     EventFullDto patchEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
-    Set<EventShortDto> getAllEventsByPrivate(Long userId, Pageable pageable);
+    Set<EventShortDto> getAllEventsByPrivate(Long userId, int from, int size);
 
     EventFullDto createEventByPrivate(Long userId, NewEventDto newEventDto);
 
