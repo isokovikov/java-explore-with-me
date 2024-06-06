@@ -379,7 +379,7 @@ public class EventServiceImpl implements EventService {
                 LocalDateTime.now().minusYears(10), // например, за последние 10 лет
                 LocalDateTime.now(),
                 List.of("/events/" + event.getId()),
-                false // или true, если нужны уникальные IP
+                true // или true, если нужны уникальные IP
         );
 
         long views = stats.stream()
