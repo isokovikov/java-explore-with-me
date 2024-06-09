@@ -125,6 +125,10 @@ public class EventCustomRepositoryImpl implements EventCustomRepository {
 
         query.select(root).where(criteria);
 
-        return entityManager.createQuery(query).setFirstResult(from).setMaxResults(size).getResultStream().collect(Collectors.toSet());
+        return entityManager.createQuery(query)
+                .setFirstResult(from)
+                .setMaxResults(size)
+                .getResultStream()
+                .collect(Collectors.toSet());
     }
 }
