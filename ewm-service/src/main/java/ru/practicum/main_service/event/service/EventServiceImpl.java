@@ -398,9 +398,6 @@ public class EventServiceImpl implements EventService {
     }
 
     private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
-//        List<Event> sortedEvents = events.stream()
-//                .sorted(Comparator.comparing(Event::getEventDate))
-//                .collect(Collectors.toList());
 
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
