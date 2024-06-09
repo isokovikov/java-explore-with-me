@@ -150,8 +150,14 @@ public class EventServiceImpl implements EventService {
     public Set<EventShortDto> getAllEventsByPrivate(Long userId, int from, int size) {
         //log.info("Output of all user events with id {} and pagination {}", userId, pageable);
 
+        Sort sortByDateTime = Sort.by("eventDate").descending();
+        Sort sort = sortByDateTime;//.and(sortById);
+
+        Pageable pageableByPrivate;
+        pageableByPrivate = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
+
         userService.getUserById(userId);
-        List<Event> events = eventRepository.findAllByInitiatorId(userId, PageRequest.of(from, size));
+        List<Event> events = eventRepository.findAllByInitiatorId(userId, pageableByPrivate);
 
         return toEventsShortDto(new HashSet<>(events));
     }
