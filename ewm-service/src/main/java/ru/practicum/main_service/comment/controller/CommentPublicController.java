@@ -12,6 +12,7 @@ import ru.practicum.main_service.comment.service.CommentService;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class CommentPublicController {
     @ResponseStatus(HttpStatus.OK)
     public CommentDto getCommentByPublic(@PathVariable Long commentId) {
         return commentService.getCommentByPublic(commentId);
+    }
+
+    @GetMapping("/comments/count")
+    public Map<Long, Integer> getCommentsCountByEventIds(@RequestParam List<Long> eventsId) {
+        return commentService.getCommentsCountByEventIds(eventsId);
     }
 }

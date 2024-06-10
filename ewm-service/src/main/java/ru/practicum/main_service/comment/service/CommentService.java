@@ -5,6 +5,7 @@ import ru.practicum.main_service.comment.dto.CommentDto;
 import ru.practicum.main_service.comment.dto.NewCommentDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CommentService {
     List<CommentDto> getCommentsByAdmin(Pageable pageable);
@@ -22,4 +23,6 @@ public interface CommentService {
     List<CommentDto> getCommentsByPublic(Long eventId, Pageable pageable);
 
     CommentDto getCommentByPublic(Long commentId);
+
+    Map<Long, Integer> getCommentsCountByEventIds(List<Long> eventsId);
 }

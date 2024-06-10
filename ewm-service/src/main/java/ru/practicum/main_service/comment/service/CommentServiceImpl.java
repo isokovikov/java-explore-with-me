@@ -19,7 +19,9 @@ import ru.practicum.main_service.user.model.User;
 import ru.practicum.main_service.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -43,11 +45,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteByAdmin(Long commentId) {
-        log.info("Deleting a comment with id {}", commentId);
         commentRepository.findById(commentId).orElseThrow(() ->
                 new NotFoundException("There is no Comment with this id."));
 
         commentRepository.deleteById(commentId);
+        log.info("Successfully deleted comment with id {}", commentId);
     }
 
     @Override
@@ -132,6 +134,18 @@ public class CommentServiceImpl implements CommentService {
         log.info("Output of a comment with id {}", commentId);
 
         return commentMapper.toCommentDto(getCommentById(commentId));
+    }
+
+    @Override
+    public Map<Long, Integer> getCommentsCountByEventIds(List<Long> eventsId) {
+        List<Object[]> results = commentRepository.findAllCommentsByEventId(eventsId);
+        Map<Long, Integer> commentsCountMap = new HashMap<>();
+        for (Object[] result : results) {
+            Long eventId = (Long) result[0];
+            Long count = (Long) result[1];
+            commentsCountMap.put(eventId, count.intValue());
+        }
+        return commentsCountMap;
     }
 
     private List<CommentDto> toCommentsDto(List<Comment> comments) {

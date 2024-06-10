@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.main_service.comment.model.Comment;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByAuthorId(Long userId);
@@ -19,5 +18,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "FROM Comment com " +
             "WHERE com.event.id = ?1 " +
             "GROUP BY com.event.id")
-    Map<Long, Integer> findAllCommentsByEventId(List<Long> eventsId);
+    List<Object[]> findAllCommentsByEventId(List<Long> eventsId);
 }
