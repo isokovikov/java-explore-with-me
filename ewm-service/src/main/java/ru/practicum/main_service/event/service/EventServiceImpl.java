@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main_service.category.model.Category;
 import ru.practicum.main_service.category.service.CategoryService;
+import ru.practicum.main_service.comment.repository.CommentRepository;
 import ru.practicum.main_service.event.dto.EventFullDto;
 import ru.practicum.main_service.event.dto.EventShortDto;
 import ru.practicum.main_service.event.dto.LocationDto;
@@ -49,6 +50,7 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final UserService userService;
     private final CategoryService categoryService;
+    private final CommentRepository commentRepository;
     private final StatsService statsService;
     private final LocationRepository locationRepository;
     private final EventRepository eventRepository;
@@ -148,8 +150,14 @@ public class EventServiceImpl implements EventService {
     public Set<EventShortDto> getAllEventsByPrivate(Long userId, int from, int size) {
         //log.info("Output of all user events with id {} and pagination {}", userId, pageable);
 
+        Sort sortByDateTime = Sort.by("eventDate").descending();
+        Sort sort = sortByDateTime;//.and(sortById);
+
+        Pageable pageableByPrivate;
+        pageableByPrivate = PageRequest.of(Objects.requireNonNullElse(from, 0), size, sort);
+
         userService.getUserById(userId);
-        List<Event> events = eventRepository.findAllByInitiatorId(userId, PageRequest.of(from, size));
+        List<Event> events = eventRepository.findAllByInitiatorId(userId, pageableByPrivate);
 
         return toEventsShortDto(new HashSet<>(events));
     }
@@ -332,12 +340,23 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);
+        List<Long> eventsId = new ArrayList<>();
+
+        for (Event event : events) {
+            eventsId.add(event.getId());
+        }
+        Map<Long, Long> comments = new HashMap<>();
+        for (Event event : events) {
+            comments.put(event.getId(), (long) commentRepository.findAllByEventId(event.getId(),
+                    PageRequest.of(0, 10)).size());
+        }
 
         return events.stream()
                 .map((event) -> eventMapper.toEventShortDto(
                         event,
                         confirmedRequests.getOrDefault(event.getId(), 0L),
-                        views.getOrDefault(event.getId(), 0L)))
+                        views.getOrDefault(event.getId(), 0L),
+                        comments.getOrDefault(event.getId(), 0L)))
                 .sorted(Comparator.comparing(EventShortDto::getEventDate))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
@@ -398,9 +417,6 @@ public class EventServiceImpl implements EventService {
     }
 
     private Set<EventFullDto> toEventsFullDto(Set<Event> events) {
-//        List<Event> sortedEvents = events.stream()
-//                .sorted(Comparator.comparing(Event::getEventDate))
-//                .collect(Collectors.toList());
 
         Map<Long, Long> views = statsService.getViews(events);
         Map<Long, Long> confirmedRequests = statsService.getConfirmedRequests(events);

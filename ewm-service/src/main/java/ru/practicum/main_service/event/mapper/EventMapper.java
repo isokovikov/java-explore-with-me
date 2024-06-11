@@ -26,5 +26,5 @@ public interface EventMapper {
 
     EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views);
 
-    EventShortDto toEventShortDto(Event event, Long confirmedRequests, Long views);
+    EventShortDto toEventShortDto(Event event, Long confirmedRequests, Long views, Long comments);
 }
